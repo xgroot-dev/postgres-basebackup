@@ -71,10 +71,6 @@ if [[ ! -d $VOLUME_PATH ]]; then
   error_exit "$VOLUME_PATH is not a directory"
 fi
 
-if [[ $(ls -A $VOLUME_PATH) ]]; then
-  error_exit "$VOLUME_PATH is not empty"
-fi
-
 section "Dumping database from $PG_HOST to $VOLUME_PATH"
 
 pg_basebackup -h $PG_HOST -p $PG_PORT -U $PG_USER -D $VOLUME_PATH -Xs -P
