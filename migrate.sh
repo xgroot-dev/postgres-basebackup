@@ -51,6 +51,9 @@ fi
 if [ -z "$PG_HOST" ]; then
     error_exit "PG_HOST environment variable is not set."
 fi
+if [ -z "$PG_PORT" ]; then
+    error_exit "PG_PORT environment variable is not set."
+fi
 if [ -z "$PG_USER" ]; then
     error_exit "PG_USER environment variable is not set."
 fi
@@ -60,9 +63,21 @@ fi
 
 write_ok "Env correctly set"
 
+write_ok "Target location contents:"
+
+find $VOLUME_PATH
+
+if [[ ! -d $VOLUME_PATH ]]; then
+  error_exit "$VOLUME_PATH is not a directory"
+fi
+
+if [[ $(ls -A $VOLUME_PATH) ]]; then
+  error_exit "$VOLUME_PATH is not empty"
+fi
+
 section "Dumping database from $PG_HOST to $VOLUME_PATH"
 
-pg_basebackup -h $PG_HOST -U $PG_USER -D $VOLUME_PATH -Xs -P
+pg_basebackup -h $PG_HOST -p $PG_PORT -U $PG_USER -D $VOLUME_PATH -Xs -P
 
 write_ok "Successfully saved dump to $VOLUME_PATH"
 
